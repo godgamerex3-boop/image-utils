@@ -1,6 +1,6 @@
-import { Polygon, point as flattenPoint } from "@flatten-js/core"
+import { point as flattenPoint, Polygon } from "@flatten-js/core"
 import { applyToPoint, type Matrix } from "transformation-matrix"
-import { svgPathToPoints, type Point } from "./svg-path-to-points"
+import { type Point, svgPathToPoints } from "./svg-path-to-points"
 
 export const SVG_MIMETYPE = "image/svg+xml"
 export const PNG_MIMETYPE = "image/png"
@@ -232,7 +232,7 @@ function getSvgViewBox(svg: string): {
   width: number
   height: number
 } {
-  const viewBoxMatch = svg.match(/\bviewBox\s*=\s*["']([^"']+)["']/i)
+  const viewBoxMatch = svg.match(/(?:^|\s)viewBox\s*=\s*["']([^"']+)["']/i)
   const viewBox = viewBoxMatch?.[1]
     ?.trim()
     .split(/[\s,]+/)
@@ -255,7 +255,7 @@ function getSvgPathDataList(svg: string): string[] {
   const pathTagRegex = /<path\b[^>]*>/gi
 
   for (const pathTag of svg.match(pathTagRegex) ?? []) {
-    const dMatch = pathTag.match(/\bd\s*=\s*(["'])(.*?)\1/i)
+    const dMatch = pathTag.match(/(?:^|\s)d\s*=\s*(["'])(.*?)\1/i)
     if (dMatch?.[2]) pathDataList.push(dMatch[2])
   }
 
