@@ -126,8 +126,19 @@ export function svgPathToPoints(
       }
 
       case "A": {
+        const rx = segment[1]
+        const ry = segment[2]
         const endX = segment[6]
         const endY = segment[7]
+
+        // Per SVG spec: If rx = 0 or ry = 0, then this arc is treated as a straight line segment joining the endpoints
+        if (rx === 0 || ry === 0) {
+          currentPoints.push({ x: endX, y: endY })
+          currentX = endX
+          currentY = endY
+          break
+        }
+
         const segmentPath = `M ${currentX} ${currentY} A ${segment[1]} ${segment[2]} ${segment[3]} ${segment[4]} ${segment[5]} ${endX} ${endY}`
         const sampledPoints = sampleCurveSegment(segmentPath, samplesPerUnit)
         currentPoints.push(...sampledPoints)
